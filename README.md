@@ -1,1 +1,1 @@
-# SpriterManipulator
+# spriterEditor
