@@ -34,18 +34,19 @@
     <link href="css/prettyLoader.css" rel="stylesheet" />
     <script src="js/imagesloaded.pkgd.min.js"></script>
     <script src="js/readSpriter.js"></script>
-   
+
     <script>
         var objSpriterObject = {};
         $('document').ready(function () {
             $("document").submit(function (event) {
                 event.preventDefault();
             });
-                
-            $.get('charMapImagesAndSpriterFiles/womanTester.scon', function (data) { }).done(function (data) {
+
+            $.get('charMapImagesAndSpriterFiles/womanWithPieceCharMap.scon', function (data) { }).done(function (data) {
                 objSpriterObject = JSON.parse(data);
                 console.log(objSpriterObject);
-                var editor = new $.fn.dataTable.Editor({
+
+                /*var editor = new $.fn.dataTable.Editor({
                     table: "#Folders",
                     fields: [
                         {
@@ -81,20 +82,12 @@
                             name: "Width"
                         }
                     ],
-                });
-                editor.on('preSubmit', function (e, o, action) {
-                    var arrVals = editor.val();
-                    for (var i = 0; i < arrVals.length; i++) {
-                        //editor.val()
-                    };
-                    editor.edit('#Folders tbody tr.active');
-                    editor.blur();
-                    return false;
-                    
-                });
+
+                });*/
                 var arrRowArr = [];
+                var arrEntityRowArr = [];
                 for (var i = 0; i < objSpriterObject.folder.length; i++) {
-                    
+
                     for (var j = 0; j < objSpriterObject.folder[i].file.length; j++) {
                         var objRow = {};
                         objRow.Folder_id = objSpriterObject.folder[i].id;
@@ -105,14 +98,42 @@
                         objRow.Pivot_y = objSpriterObject.folder[i].file[j].pivot_y;
                         objRow.Height = objSpriterObject.folder[i].file[j].height;
                         objRow.Width = objSpriterObject.folder[i].file[j].width;
+                        for (var props in objRow) {
+                            var value = objRow[props];
+                            if (typeof (value) == 'undefined') {
+                                objRow[props] = 'null';
+                            };
+                        };
                         arrRowArr.push(objRow);
+                    };
+
+                };
+                for (var i = 0; i < objSpriterObject.entity.length; i++) {
+
+                    for (var j = 0; j < objSpriterObject.entity[i].character_map.length; j++) {
+                        for (var k = 0; k < objSpriterObject.entity[i].character_map[j].map.length; k++) {
+                            var objRow = {};
+                            objRow.character_map_name = objSpriterObject.entity[i].character_map[j].name;
+                            objRow.character_map_id = objSpriterObject.entity[i].character_map[j].id;
+                            objRow.fromFolder_id = objSpriterObject.entity[i].character_map[j].map[k].file;
+                            objRow.fromFolder_Name = objSpriterObject.entity[i].character_map[j].map[k].folder;
+                            objRow.toFolder_id = objSpriterObject.entity[i].character_map[j].map[k].target_file;
+                            objRow.toFolder_Name = objSpriterObject.entity[i].character_map[j].map[k].target_folder;
+                            for (var props in objRow) {
+                                var value = objRow[props];
+                                if (typeof (value) == 'undefined') {
+                                    objRow[props] = 'null';
+                                };
+                            };
+                            arrEntityRowArr.push(objRow);
+                        };
                     };
 
                 };
                 //table.draw();
                 $('#Folders').DataTable({
-                    "dom": "Tfrtip",
-                    "data" : arrRowArr,
+                    "dom": "frtip",
+                    "data": arrRowArr,
                     //"ajax": "php/table.Folders.php",
                     "columns": [
                         {
@@ -139,7 +160,7 @@
                         {
                             data: "Width"
                         }
-                    ],
+                    ]/*,
                     "tableTools": {
                         "sRowSelect": "os",
                         "aButtons": [
@@ -147,9 +168,41 @@
                             { "sExtends": "editor_edit", "editor": editor },
                             { "sExtends": "editor_remove", "editor": editor }
                         ]
-                    }
+                    }*/
                 });
-
+                $('#charmaps').DataTable({
+                    "dom": "frtip",
+                    "data": arrEntityRowArr,
+                    //"ajax": "php/table.Folders.php",
+                    "columns": [
+                        {
+                            data: "character_map_name"
+                        },
+                        {
+                            data: "character_map_id"
+                        },
+                        {
+                            data: "fromFolder_id"
+                        },
+                        {
+                            data: "fromFolder_Name"
+                        },
+                        {
+                            data: "toFolder_id"
+                        },
+                        {
+                            data: "toFolder_Name"
+                        }
+                    ]/*,
+                    "tableTools": {
+                        "sRowSelect": "os",
+                        "aButtons": [
+                            { "sExtends": "editor_create", "editor": editor },
+                            { "sExtends": "editor_edit", "editor": editor },
+                            { "sExtends": "editor_remove", "editor": editor }
+                        ]
+                    }*/
+                });
             });
 
 
@@ -173,7 +226,7 @@
                 <a id="topLeftNav" class="navbar-brand" href="#navTopDiv">Spriter Reader</a>
 
             </div>
-           
+
         </div>
     </nav>
     </br></br></br></br>
@@ -193,11 +246,21 @@
                         <th>Width</th>
                     </tr>
                 </thead>
-                <tbody>
-
-                </tbody>
+                <tbody></tbody>
             </table>
-        
+            <table cellpadding="0" cellspacing="0" border="0" class="display" id="charmaps" width="100%">
+                <thead>
+                    <tr>
+                        <th>character_map_name</th>
+                        <th>character_map_id</th>
+                        <th>fromFolder_id</th>
+                        <th>fromFolder_Name</th>
+                        <th>toFolder_id</th>
+                        <th>toFolder_Name</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
 
     </div>
