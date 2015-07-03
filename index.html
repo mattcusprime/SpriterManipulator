@@ -34,185 +34,36 @@
     <link href="css/prettyLoader.css" rel="stylesheet" />
     <script src="js/imagesloaded.pkgd.min.js"></script>
     <script src="js/readSpriter.js"></script>
-
+        
     <script>
         var objSpriterObject = {};
+        var arrRowArr = [];
+        var arrEntityRowArr = [];
+        var mySpriterFileUrl = 'charMapImagesAndSpriterFiles/womanWithPieceCharMap.scon';
+        var myPrependString = '';
+        //charMapImagesAndSpriterFiles/
         $('document').ready(function () {
-            $("document").submit(function (event) {
-                event.preventDefault();
+            if (typeof (localStorage.getItem('lastUrlString')) != 'undefined') {
+                $('#baseString').val(localStorage.getItem('lastUrlString'));
+            };
+            //getSpriterFile(mySpriterFileUrl, myPrependString);
+            $('table').hide();
+            $('#fileinput').on("change", function (e) {
+                myPrependString = $('#baseString').val();
+                readSingleFile(e, objSpriterObject, myPrependString);
+
             });
-
-            $.get('charMapImagesAndSpriterFiles/womanWithPieceCharMap.scon', function (data) { }).done(function (data) {
-                objSpriterObject = JSON.parse(data);
-                console.log(objSpriterObject);
-
-                /*var editor = new $.fn.dataTable.Editor({
-                    table: "#Folders",
-                    fields: [
-                        {
-                            label: "Folder_id",
-                            name: "Folder_id"
-                        },
-                        {
-                            label: "Folder_Name",
-                            name: "Folder_Name"
-                        },
-                        {
-                            label: "File_id",
-                            name: "File_id"
-                        },
-                        {
-                            label: "File_Name",
-                            name: "File_Name"
-                        },
-                        {
-                            label: "Pivot_x",
-                            name: "Pivot_x"
-                        },
-                        {
-                            label: "Pivot_y",
-                            name: "Pivot_y"
-                        },
-                        {
-                            label: "Height",
-                            name: "Height"
-                        },
-                        {
-                            label: "Width",
-                            name: "Width"
-                        }
-                    ],
-
-                });*/
-                var arrRowArr = [];
-                var arrEntityRowArr = [];
-                for (var i = 0; i < objSpriterObject.folder.length; i++) {
-
-                    for (var j = 0; j < objSpriterObject.folder[i].file.length; j++) {
-                        var objRow = {};
-                        objRow.Folder_id = objSpriterObject.folder[i].id;
-                        objRow.Folder_Name = objSpriterObject.folder[i].file[j].name;
-                        objRow.File_id = objSpriterObject.folder[i].file[j].id;
-                        objRow.File_Name = objSpriterObject.folder[i].file[j].name;
-                        objRow.Pivot_x = objSpriterObject.folder[i].file[j].pivot_x;
-                        objRow.Pivot_y = objSpriterObject.folder[i].file[j].pivot_y;
-                        objRow.Height = objSpriterObject.folder[i].file[j].height;
-                        objRow.Width = objSpriterObject.folder[i].file[j].width;
-                        for (var props in objRow) {
-                            var value = objRow[props];
-                            if (typeof (value) == 'undefined') {
-                                objRow[props] = 'null';
-                            };
-                        };
-                        arrRowArr.push(objRow);
-                    };
-
-                };
-                for (var i = 0; i < objSpriterObject.entity.length; i++) {
-
-                    for (var j = 0; j < objSpriterObject.entity[i].character_map.length; j++) {
-                        for (var k = 0; k < objSpriterObject.entity[i].character_map[j].map.length; k++) {
-                            var objRow = {};
-                            objRow.character_map_name = objSpriterObject.entity[i].character_map[j].name;
-                            objRow.character_map_id = objSpriterObject.entity[i].character_map[j].id;
-                            objRow.fromFolder_id = objSpriterObject.entity[i].character_map[j].map[k].file;
-                            objRow.fromFolder_Name = objSpriterObject.entity[i].character_map[j].map[k].folder;
-                            objRow.toFolder_id = objSpriterObject.entity[i].character_map[j].map[k].target_file;
-                            objRow.toFolder_Name = objSpriterObject.entity[i].character_map[j].map[k].target_folder;
-                            for (var props in objRow) {
-                                var value = objRow[props];
-                                if (typeof (value) == 'undefined') {
-                                    objRow[props] = 'null';
-                                };
-                            };
-                            arrEntityRowArr.push(objRow);
-                        };
-                    };
-
-                };
-                //table.draw();
-                $('#Folders').DataTable({
-                    "dom": "frtip",
-                    "data": arrRowArr,
-                    //"ajax": "php/table.Folders.php",
-                    "columns": [
-                        {
-                            data: "Folder_id"
-                        },
-                        {
-                            data: "Folder_Name"
-                        },
-                        {
-                            data: "File_id"
-                        },
-                        {
-                            data: "File_Name"
-                        },
-                        {
-                            data: "Pivot_x"
-                        },
-                        {
-                            data: "Pivot_y"
-                        },
-                        {
-                            data: "Height"
-                        },
-                        {
-                            data: "Width"
-                        }
-                    ]/*,
-                    "tableTools": {
-                        "sRowSelect": "os",
-                        "aButtons": [
-                            { "sExtends": "editor_create", "editor": editor },
-                            { "sExtends": "editor_edit", "editor": editor },
-                            { "sExtends": "editor_remove", "editor": editor }
-                        ]
-                    }*/
-                });
-                $('#charmaps').DataTable({
-                    "dom": "frtip",
-                    "data": arrEntityRowArr,
-                    //"ajax": "php/table.Folders.php",
-                    "columns": [
-                        {
-                            data: "character_map_name"
-                        },
-                        {
-                            data: "character_map_id"
-                        },
-                        {
-                            data: "fromFolder_id"
-                        },
-                        {
-                            data: "fromFolder_Name"
-                        },
-                        {
-                            data: "toFolder_id"
-                        },
-                        {
-                            data: "toFolder_Name"
-                        }
-                    ]/*,
-                    "tableTools": {
-                        "sRowSelect": "os",
-                        "aButtons": [
-                            { "sExtends": "editor_create", "editor": editor },
-                            { "sExtends": "editor_edit", "editor": editor },
-                            { "sExtends": "editor_remove", "editor": editor }
-                        ]
-                    }*/
-                });
-            });
-
 
         });
     </script>
 </head>
 <body>
-    <!----<button id="btnTestStuff">Use me to test things!</button>
+    <div class="container-fluid col-md-offset-4 col-md-4 col-md-offset-4">
+        <p class="col-md-4">Load Spriter Scon File</p><input class="col-md-2" id="fileinput" style="width:100px;color:#446655;display: inline;" type="file" /><input class="col-md-offset-2 col-md-4" type="text" id="baseString" placeholder="Base img url" />
+    </div>
+        <!----<button id="btnTestStuff">Use me to test things!</button>
     <input type="text" size="50" id="offline">
-    <button id="loadLastGarmentProduct">Use me to load last Garment Prod!</button>-->
+    <button id="loadLastGarmentProduct">Use me to load last Garment Prod!</button>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container" id="navTopDiv">
@@ -228,16 +79,43 @@
             </div>
 
         </div>
-    </nav>
-    </br></br></br></br>
+    </nav>-->
+    <div class="container-fluid" id="charTableDiv">
+        <div class="col-md-10 starter-template row">
+            <table cellpadding="0" cellspacing="0" border="0" class="display" id="charmaps" width="100%">
+                <thead>
+                    <tr>
+                        <th>character_map_name</th>
+                        <th>fromFolder_id</th>
+                        <th>toFolder_id</th>
+                        <th>character_map_id</th>
+                        <th>fromFile_id</th>
+                        <th>toFile_id</th>
+                        <th>fromImage</th>
+                        <th>toImage</th>
+                        <th>fromFileName</th>
+                        <th>toFileName</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+
+        </div>
+
+
+
+    </div>
+
     <div class="container-fluid" id="fileTableDiv">
         <div class="col-md-10 starter-template row">
-
-            <table cellpadding="0" cellspacing="0" border="0" class="display" id="Folders" width="100%">
+            
+            <table class="display cell-border" id="Folders">
                 <thead>
                     <tr>
                         <th>Folder_id</th>
                         <th>Folder_Name</th>
+                        <th>image</th>
                         <th>File_id</th>
                         <th>File_Name</th>
                         <th>Pivot_x</th>
@@ -248,55 +126,41 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <table cellpadding="0" cellspacing="0" border="0" class="display" id="charmaps" width="100%">
-                <thead>
-                    <tr>
-                        <th>character_map_name</th>
-                        <th>character_map_id</th>
-                        <th>fromFolder_id</th>
-                        <th>fromFolder_Name</th>
-                        <th>toFolder_id</th>
-                        <th>toFolder_Name</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            
         </div>
 
     </div>
+  <div class="page">
+            <div class="container-fluid clearThisComponentOnNewGarmentLoad" id="garmentHeader">
 
-
-    <div class="page">
-        <div class="container-fluid clearThisComponentOnNewGarmentLoad" id="garmentHeader">
-
+            </div>
         </div>
-    </div>
-    <!-- /.container -->
-    <div class="page" id="search">
-        <div class="container-fluid clearThisComponentOnNewGarmentLoad" id="reportsHeader">
+        <!-- /.container -->
+        <div class="page" id="search">
+            <div class="container-fluid clearThisComponentOnNewGarmentLoad" id="reportsHeader">
 
+            </div>
+            <!-- container -->
         </div>
-        <!-- container -->
-    </div>
-    <div class="page">
-        <div id="measurementDiv" class="container-fluid clearThisComponentOnNewGarmentLoad">
+        <div class="page">
+            <div id="measurementDiv" class="container-fluid clearThisComponentOnNewGarmentLoad">
 
+            </div>
+            <!-- container -->
         </div>
-        <!-- container -->
-    </div>
 
-    <div class="page">
-        <div id="constructionDiv" class="container-fluid clearThisComponentOnNewGarmentLoad">
+        <div class="page">
+            <div id="constructionDiv" class="container-fluid clearThisComponentOnNewGarmentLoad">
 
+            </div>
+            <!-- container -->
         </div>
-        <!-- container -->
-    </div>
-    <div class="page">
-        <div id="blockWeightSpreadDiv" class="container-fluid clearThisComponentOnNewGarmentLoad">
+        <div class="page">
+            <div id="blockWeightSpreadDiv" class="container-fluid clearThisComponentOnNewGarmentLoad">
 
+            </div>
+            <!-- container -->
         </div>
-        <!-- container -->
-    </div>
 
 </body>
 </html>

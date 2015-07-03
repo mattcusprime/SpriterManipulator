@@ -6,9 +6,11 @@
   "window": {
     "title": "Tech Pack Generator",
 	"toolbar": true,
-    "fullscreen": true,
+    "fullscreen": false,
 	"position": "center",
-	"kiosk": false
+	"kiosk": false,
+	"width": 1200,
+	"height": 1000
 	
   }
 }
